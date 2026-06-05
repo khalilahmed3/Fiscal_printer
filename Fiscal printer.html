@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title data-i18n="app_title">Troubleshooting Stampante Fiscale EPSON</title>
+
+<style> 
+ :root { 
+ --bg1: rgba(0,255,255,0.15); 
+ --bg2: rgba(255,0,255,0.15); 
+ --bg3a: #05010d; 
+ --bg3b: #0b0120; 
+ --panel: rgba(20, 10, 40, 0.9); 
+ --text: #fff; 
+ --accent1: #ff3c00; 
+ --accent2: #ff00ff; 
+ --accent3: #00ffff; 
+ --btn-bg: linear-gradient(135deg, #ff3c00, #ff00ff); 
+ --btn-bg-hover: linear-gradient(135deg, #00ffff, #ff00ff); 
+ } 
+ * { box-sizing: border-box; } 
+ body { 
+ font-family: Arial, sans-serif; 
+ margin: 0; padding: 0; 
+ background: linear-gradient(120deg, var(--bg1), transparent 40%), 
+ linear-gradient(240deg, var(--bg2), transparent 40%), 
+ linear-gradient(0deg, var(--bg3a), var(--bg3b)); 
+ background-size: 200% 200%; 
+ animation: cyberMove 10s linear infinite; 
+ color: var(--text); 
+ } 
+ @keyframes cyberMove { 0%{background-position:0% 50%} 100%{background-position:100% 50%} } 
+ .brand-left,.brand-right{position:fixed;top:16px;z-index:1000;display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,.12);backdrop-filter:blur(2px)} 
+ .brand-left{left:16px} .brand-right{right:16px} 
+ .brand-left img{height:38px;width:auto;display:block;filter:drop-shadow(0 0 6px rgba(0,255,255,.5))} 
+ .brand-right .brand-text{font-weight:700;letter-spacing:.3px;color:#fff;text-shadow:0 0 6px rgba(0,255,255,.35),0 0 10px rgba(255,0,255,.25);font-size:18px;white-space:nowrap} 
+ .page-top-spacer{height:80px;width:100%} 
+ #app{max-width:980px;margin:0 auto 32px;padding:24px 24px 40px;background:var(--panel);border-radius:12px;box-shadow:0 0 20px rgba(0,255,255,.4),0 0 40px rgba(255,0,255,.2)} 
+ .app-header{display:grid;grid-template-columns:1fr;align-items:center;gap:8px;margin-bottom:12px;position:relative;text-align:center} 
+ h1{margin:0;text-align:center;text-shadow:0 0 5px var(--accent3),0 0 10px var(--accent3),0 0 20px var(--accent2);font-size:1.6rem;line-height:1.2} 
+ .step-title{margin-top:10px;margin-bottom:8px;font-size:1.2rem} 
+ .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px} 
+ .step{display:none;margin:12px 0 28px} 
+ .step.is-active{display:block} 
+ .buttons-center{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:15px;width:100%} 
+ .btn,.btn-secondary{background:var(--btn-bg);color:#fff;border:none;padding:12px 20px;margin:6px 4px;cursor:pointer;border-radius:8px;font-size:15px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 0 10px rgba(255,60,0,.6),0 0 20px rgba(255,0,255,.4);transition:all .25s ease} 
+ .btn:hover,.btn-secondary:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 15px rgba(0,255,255,.8),0 0 30px rgba(255,0,255,.6);background:var(--btn-bg-hover)} 
+ .btn-secondary{background:linear-gradient(135deg,#7a7a7a,#444);box-shadow:0 0 10px rgba(120,120,120,.4),0 0 20px rgba(80,80,80,.3);text-transform:none;letter-spacing:0} 
+ .bottom-actions{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap} 
+ .image-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px} 
+ .help-image{width:150px;height:110px;object-fit:cover;border-radius:12px;cursor:pointer;transition:.25s;box-shadow:0 0 12px rgba(0,0,0,.4)} 
+ .help-image:hover{transform:scale(1.08);box-shadow:0 0 20px rgba(0,255,255,.8)} 
+ ol,ul{padding-left:20px} 
+ li{color:#ffd3d3} 
+ .lang-switcher{position:absolute; top:-8px; right:0; display:flex; gap:6px} 
+ .lang-switcher button{padding:6px 10px; font-size:12px; border-radius:6px; text-transform:none} 
+ 
+ /* MODAL LIGHTBOX */
+ .modal {
+   display: none;
+   position: fixed;
+   z-index: 9999;
+   left: 0; top: 0;
+   width: 100%; height: 100%;
+   background-color: rgba(0,0,0,0.9);
+   backdrop-filter: blur(8px);
+   align-items: center;
+   justify-content: center;
+   cursor: zoom-out;
+ }
+ .modal.is-visible { display: flex; }
+ .modal-content {
+   max-width: 95%;
+   max-height: 95%;
+   border-radius: 10px;
+   box-shadow: 0 0 30px var(--accent3), 0 0 60px var(--accent2);
+ }
+ /* FIX: rimuovi il riquadro bianco di focus iniziale */
+ #steps:focus { outline: none; }
+ </style> 
+</head>
+<body>
+  <!-- BRAND -->
+  <div class="brand-left" aria-hidden="false">
+    <img src="images/dxc.png" alt="Logo DXC" data-i18n="alt_dxc_logo" data-i18n-attr="alt"/>
+  </div>
+  <div class="brand-right" aria-label="EssilorLuxottica">
+    <span class="brand-text">EssilorLuxottica</span>
+  </div>
+
+  <div class="page-top-spacer" aria-hidden="true"></div>
+
+  <div id="app" role="application" aria-live="polite">
+    <header class="app-header">
+      <h1 data-i18n="app_title">Troubleshooting Stampante Fiscale EPSON</h1>
+      <!-- Switcher lingua disponibile da qualsiasi step -->
+      <div class="lang-switcher" aria-label="Language switcher">
+        <button type="button" class="btn-secondary" onclick="setLanguage('it')" data-i18n="btn_lang_it">Italiano 🇮🇹</button>
+        <button type="button" class="btn-secondary" onclick="setLanguage('en')" data-i18n="btn_lang_en">English 🇬🇧</button>
+      </div>
+    </header>
+
+    <main id="steps" tabindex="-1">
+      <!-- LANG SELECT -->
+      <section id="langSelect" class="step is-active" role="region" aria-labelledby="lang-title">
+        <h2 id="lang-title" class="step-title" data-i18n="lang_select_title">Seleziona la lingua / Select language</h2>
+        <div class="buttons-center">
+          <button type="button" class="btn" onclick="setLanguage('it')" data-i18n="btn_lang_it" data-next>Italiano 🇮🇹</button>
+          <button type="button" class="btn" onclick="setLanguage('en')" data-i18n="btn_lang_en"data-next>English 🇬🇧</button>
+        </div>
+      </section>
+
+      <!-- STEP 1 (Benvenuto) -->
+      <section id="step1" class="step" role="region" aria-labelledby="step1-title">
+        <h2 id="step1-title" class="visually-hidden" data-i18n="welcome_title">Benvenuto</h2>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step1B" data-i18n="btn_next">AVANTI</button>
+        </div>
+        <!-- Nuovo: tasto Indietro per tornare alla selezione lingua -->
+        <button type="button" class="btn-secondary" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 1B -->
+      <section id="step1B" class="step" role="region" aria-labelledby="step1B-title">
+        <h2 id="step1B-title" class="step-title" data-i18n="step1b_title">Errore sul visore?</h2>
+        <p data-i18n="step1b_intro">Sul display della stampante fiscale appare uno di questi errori?</p>
+        <ul>
+          <li data-i18n="step1b_li1">M.F. non fiscale</li>
+          <li data-i18n="step1b_li2">DGFE - Errore di identificazione</li>
+          <li data-i18n="step1b_li3">Periodo inattivo, effettuare chiusura</li>
+        </ul>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step2" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step2D" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 2 -->
+      <section id="step2" class="step" role="region" aria-labelledby="step2-title">
+        <h2 id="step2-title" class="step-title" data-i18n="step2_title">Errore sul visore - Tipologia</h2>
+        <p data-i18n="step2_intro">Seleziona un Messaggio:</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step2A" data-i18n="step2_btn1">M.F. non fiscale</button>
+          <button type="button" class="btn" data-next="step2B" data-i18n="step2_btn2">DGFE - Errore di identificazione</button>
+          <button type="button" class="btn" data-next="step2C" data-i18n="step2_btn3">Periodo inattivo, effettuare chiusura</button>
+        </div>
+        <div class="image-links">
+          <a href="images/M.F NON FISCALE.png" target="_blank" rel="noopener">
+            <img src="images/M.F NON FISCALE.png" class="help-image" alt="Esempio errore M.F. non fiscale" data-i18n="alt_mf" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/D.G.F.E.png" target="_blank" rel="noopener">
+            <img src="images/D.G.F.E.png" class="help-image" alt="Esempio errore DGFE" data-i18n="alt_dgfe" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 2A -->
+      <section id="step2A" class="step" role="region" aria-labelledby="step2A-title">
+        <h2 id="step2A-title" class="step-title" data-i18n="step2a_title">M.F. non fiscale</h2>
+        <p data-i18n="step2a_p1" data-i18n-type="html">
+          Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.
+        </p>
+        <p data-i18n="step2a_ip" data-i18n-type="html"><strong>IP stampante Fiscale:</strong></p>
+        <ul>
+          <li data-i18n="cat_label" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; POS HW &gt; Fiscal Printer - CIAO &gt; Error Fiscal Printer</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 2B -->
+      <section id="step2B" class="step" role="region" aria-labelledby="step2B-title">
+        <h2 id="step2B-title" class="step-title" data-i18n="step2b_title">DGFE - Errore di identificazione</h2>
+        <p data-i18n="step2b_p1" data-i18n-type="html">
+          Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.
+        </p>
+        <p data-i18n="step2b_ip" data-i18n-type="html"><strong>IP stampante Fiscale:</strong></p>
+        <ul>
+          <li data-i18n="step2b_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; POS HW &gt; Fiscal Printer - CIAO &gt; Memoria DGFE piena</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 2C -->
+      <section id="step2C" class="step" role="region" aria-labelledby="step2C-title">
+        <h2 id="step2C-title" class="step-title" data-i18n="step2c_title">Periodo inattivo - Chiusura Z</h2>
+        <p data-i18n="resolution"><strong>Risoluzione</strong></p>
+        <p data-i18n="step2c_li0">Chiedere allo store di chiudere CIAO da tutte le postazioni collegate a quella stampante fiscale (verifica personality Server).</p>
+        <ol>
+          <li data-i18n="step2c_li1" data-i18n-type="html">Da tastierino numerico digitare <strong>2222</strong>.</li>
+          <li data-i18n="step2c_li2" data-i18n-type="html">Premere il tasto <strong>CHIAVE</strong>.</li>
+          <li data-i18n="step2c_li3" data-i18n-type="html">A display verrà proposta la voce <strong>SCELTA FUNZIONE Z</strong>.</li>
+          <li data-i18n="step2c_li4" data-i18n-type="html">Digitare <strong>01</strong> (a display: <strong>CHIUSURA GIORNALIERA</strong>).</li>
+          <li data-i18n="step2c_li5" data-i18n-type="html">Premere il tasto <strong>CONTANTI</strong> per avviare la stampa. Al termine, la EPSON emetterà il tagliandino per l’Agenzia delle Entrate.</li>
+        </ol>
+        <p data-i18n="step2c_p2">Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.</p>
+        <ul>
+          <li data-i18n="step2c_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <div class="image-links">
+          <a href="images/tastierino.png" target="_blank" rel="noopener">
+            <img src="images/tastierino.png" class="help-image" alt="Tastierino numerico Epson" data-i18n="alt_keypad" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 2D -->
+      <section id="step2D" class="step" role="region" aria-labelledby="step2D-title">
+        <h2 id="step2D-title" class="step-title" data-i18n="step2d_title">Personality Server</h2>
+        
+        <p data-i18n="step2d_q1">
+         Su Personality Server la stampante fiscale Risulta <strong>pingabile?</strong>
+        </p>
+
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step3" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step2F" data-i18n="no">NO</button>
+        </div>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+        </div>
+      </section>
+
+      <!-- STEP 2F -->
+      <section id="step2F" class="step" role="region" aria-labelledby="step2F-title">
+        <h2 id="step2F-title" class="step-title" data-i18n="step2f_title">Verifica cablaggio</h2>
+        <ol>
+          <li data-i18n="step2f_li1">Verifica se qualche cavo è staccato.</li>
+          <li data-i18n="step2f_li2">Verifica se si accende la spia della stampante fiscale.</li>
+          <li data-i18n="step2f_li3">Verificare che il cavo di rete (Ethernet) sia correttamente collegato allo switch Meraki.</li>
+        </ol>
+        <p data-i18n="step2f_q1">La stampante fiscale è tornata <strong>pingabile?</strong></p>
+
+        <div class="image-links">
+          <a href="images/fiscal print back.png" target="_blank" rel="noopener">
+            <img src="images/fiscal print back.png" class="help-image" alt="Stampante fiscale" data-i18n="alt_fiscal_printer" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step2G" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step2B" data-i18n="no">NO</button>
+        </div>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+        </div>
+      </section>
+
+      <!-- STEP 2G -->
+      <section id="step2G" class="step" role="region" aria-labelledby="step2G-title">
+        <h2 id="step2G-title" class="step-title" data-i18n="step2g_title" data-i18n-type="html">Verifica apertura <strong>CIAO</strong></h2>
+        <ol>
+          <li data-i18n="step2g_li1">Chiedere allo store di aprire CIAO.</li>
+        </ol>
+        <p data-i18n="step2g_q1">CIAO si apre?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5BB" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step4" data-i18n="no">NO</button>
+        </div>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section id="step3" class="step" role="region" aria-labelledby="step3-title">
+        <h2 id="step3-title" class="step-title" data-i18n="step3_title">Errore mostrato da CIAO?</h2>
+        <p data-i18n="step3_q1">L'errore è mostrato da CIAO?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step4" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step1B" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 4 -->
+      <section id="step4" class="step" role="region" aria-labelledby="step4-title">
+        <h2 id="step4-title" class="step-title" data-i18n="step4_title">Seleziona messaggio CIAO</h2>
+
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5" data-i18n="step4_b1">Si è verificato un errore con la stampante fiscale</button>
+          <button type="button" class="btn" data-next="step5" data-i18n="step4_b2">La stampante fiscale selezionata non funziona</button>
+          <button type="button" class="btn" data-next="step8" data-i18n="step4_b3">Stampante in stato offline</button>
+          <button type="button" class="btn" data-next="step8" data-i18n="step4_b4">Printer time out</button>
+          <button type="button" class="btn" data-next="step9" data-i18n="step4_b5">Errore stato previsto aperto/chiuso</button>
+          <button type="button" class="btn" data-next="step8F" data-i18n="step4_b6">La data non corrisponde a quella del sistema</button>
+          <button type="button" class="btn" data-next="step11" data-i18n="step4_b7">Il numero di serie della stampante non corrisponde a quello rilevato in fase di apertura/chiusura</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5 -->
+      <section id="step5" class="step" role="region" aria-labelledby="step5-title">
+        <h2 id="step5-title" class="step-title" data-i18n="step5_title">Dove si verifica il problema?</h2>
+        <p data-i18n="step5_q1">Dove si verifica il problema?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5A22" data-i18n="step5_b1">Su un solo work order</button>
+          <button type="button" class="btn" data-next="step5B" data-i18n="step5_b2">Su tutte le casse fiscali</button>
+          <button type="button" class="btn" data-next="step5C" data-i18n="step5_b3">Solo su una cassa specifica</button>
+        </div>
+       
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5A22 -->
+      <section id="step5A22" class="step" role="region" aria-labelledby="step5B-title">
+        <h2 id="step5A22-title" class="step-title" data-i18n="step5a22_title">Chiusura CIAO</h2>
+        <ol>
+          <li data-i18n="step5a22_li1">Chiudere CIAO con il pulsante “X” in alto a destra.</li>
+          <li data-i18n="step5a22_li2">Avviarlo di nuovo.</li>
+        </ol>
+        <p data-i18n="step5a22_q1">CIAO si apre?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5A23" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B4" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5A23 -->
+      <section id="step5A23" class="step" role="region" aria-labelledby="step5a23-title">
+        <h2 id="step5a23-title" class="step-title" data-i18n="step5a23_title">Verifica stato ordine</h2>
+        <ol>
+          <li data-i18n="step5a23_li1">Accedere al Back Office</li>
+          <li data-i18n="step5a23_li2">Aprire il Giornale Elettronico</li>
+          <li data-i18n="step5a23_li3">Cercare il Work Order in cui si verifica il problema</li>
+          <li data-i18n="step5a23_li4">Verificare lo stato attuale dell’ordine</li>
+        </ol>
+
+        <div class="image-links">
+          <a href="images/giornale eletronico.png" target="_blank" rel="noopener">
+            <img src="images/giornale eletronico.png" class="help-image" alt="Esempio errore su un solo work order" data-i18n="alt_wo" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/stato del'ordine.png" target="_blank" rel="noopener">
+            <img src="images/stato del'ordine.png" class="help-image" alt="Esempio errore su un solo work order" data-i18n="alt_wo" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5A" data-i18n="orphaned">ORPHANED</button>
+          <button type="button" class="btn" data-next="step5A24" data-i18n="cancelled">CANCELLED</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5A24 -->
+      <section id="step5A24" class="step" role="region" aria-labelledby="step5a24-title">
+        <h2 id="step5a24-title" class="step-title" data-i18n="step5a24_title">Risolvere il ticket</h2>
+        <p data-i18n="step5a24_p1">Comunicare allo store che l’ordine è stato cancellato e che, per questo motivo, non è possibile procedere con l’operazione richiesta.</p>
+        <ul>
+          <li data-i18n="step5bb_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 5A -->
+      <section id="step5A" class="step" role="region" aria-labelledby="step5A-title" data-i18n-type="html">
+        <h2 id="step5A-title" class="step-title" data-i18n="step5a_title">Errore su un solo work order</h2>
+        <p data-i18n="step5a_p1" data-i18n-type="html"><strong>Inoltrare il ticket a:</strong> SSS North America - POS Triage - 3rd Level Support</p>
+        <p data-i18n="step5a_p2"><strong>Descrizione del problema:</strong></p>
+        <ul>
+          <li data-i18n="step5a_li1">Allegare uno screenshot</li>
+          <li data-i18n="step5a_li2">Nome e cognome del cliente</li>
+          <li data-i18n="step5a_li3">Numero del Work Order specificando che si tratta di un solo ordine</li>
+          <li data-i18n="step5a_li4" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+        </div>
+      </section>
+
+      <!-- STEP 5B -->
+      <section id="step5B" class="step" role="region" aria-labelledby="step5B-title">
+        <h2 id="step5B-title" class="step-title" data-i18n="step5b_title">Errore su tutte le casse</h2>
+        <ol>
+          <li data-i18n="step5b_li1">Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.</li>
+          <li data-i18n="step5b_li2">Spegnere la stampante fiscale Epson dall'apposito pulsante.</li>
+        </ol>
+        <p data-i18n="step5b_q1">Il visore è spento?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5BA" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B4" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5BA -->
+      <section id="step5BA" class="step" role="region" aria-labelledby="step5BA-title">
+        <h2 id="step5BA-title" class="step-title" data-i18n="step5ba_title">Riaccensione Epson</h2>
+        <p data-i18n="step5ba_p1">Riaccendere la Epson dall'apposito pulsante.</p>
+        <p data-i18n="step5ba_q1" data-i18n-type="html">Il visore mostra <strong>“STATO DI REGISTRAZIONE”</strong>?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B3" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B4" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5B3 -->
+      <section id="step5B3" class="step" role="region" aria-labelledby="step5B3-title">
+        <h2 id="step5B3-title" class="step-title" data-i18n="step5b3_title">Procedura da tastierino</h2>
+        <p data-i18n="step5b3_intro">Eseguire la procedura da tastierino collegato alla stampante fiscale:</p>
+        <ol>
+          <li data-i18n="step5b3_li1" data-i18n-type="html">Premere il tasto <strong>CL CLEAR</strong>.</li>
+          <li data-i18n="step5b3_li2" data-i18n-type="html">Premere il tasto <strong>1</strong>.</li>
+          <li data-i18n="step5b3_li3" data-i18n-type="html">Premere il tasto <strong>REP 1</strong>.</li>
+          <li data-i18n="step5b3_li4" data-i18n-type="html">Premere il tasto <strong>ALL VOID</strong>.</li>
+          <li data-i18n="step5b3_li5" data-i18n-type="html">Premere il tasto <strong>CL CLEAR</strong> nuovamente.</li>
+        </ol>
+        <p data-i18n="step5b3_p2" data-i18n-type="html">Assicurarsi che la stampante sia tornata in <strong>STATO DI REGISTRAZIONE</strong> sul visore.</p>
+        <p data-i18n="step5b3_q1">Avviare CIAO. Il problema persiste?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B7" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5BB -->
+      <section id="step5BB" class="step" role="region" aria-labelledby="step5BB-title">
+        <h2 id="step5BB-title" class="step-title" data-i18n="step5bb_title">Ticket – Risolto</h2>
+        <p data-i18n="step5bb_p1">Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.</p>
+        <ul>
+          <li data-i18n="step5bb_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 5B4 -->
+      <section id="step5B4" class="step" role="region" aria-labelledby="step5B4-title">
+        <h2 id="step5B4-title" class="step-title" data-i18n="step5b4_title">Power cycle completo</h2>
+        <ol>
+          <li data-i18n="step5b4_li1" data-i18n-type="html">Chiedere allo store di spegnere la stampante fiscale utilizzando l’apposito pulsante.</li>
+          <li data-i18n="step5b4_li2" data-i18n-type="html">Staccare la presa di corrente (se non raggiungibile: girare la stampante e staccare il primo cavo sulla destra).</li>
+        </ol>
+        <p data-i18n="step5b4_q1">Il visore della Epson è spento?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B6" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B7" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/fiscal print back.png" target="_blank" rel="noopener">
+            <img src="images/fiscal print back.png" class="help-image" alt="Retro stampante fiscale" data-i18n="alt_back" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5B6 -->
+      <section id="step5B6" class="step" role="region" aria-labelledby="step5B6-title">
+        <h2 id="step5B6-title" class="step-title" data-i18n="step5b6_title">Ricollegare alimentazione</h2>
+        <ol>
+          <li data-i18n="step5b6_li1">Ricollegare il cavo/alimentazione.</li>
+          <li data-i18n="step5b6_li2">Attendere che la stampante diventi nuovamente raggiungibile (pingabile).</li>
+        </ol>
+        <p data-i18n="step5b6_q1" data-i18n-type="html">Il visore mostra <strong>“STATO DI REGISTRAZIONE”</strong>?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B3" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B7" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 5B7 -->
+      <section id="step5B7" class="step" role="region" aria-labelledby="step5B7-title">
+        <h2 id="step5B7-title" class="step-title" data-i18n="step5b7_title">Escalation</h2>
+        <ul>
+          <li data-i18n="step5b7_li1">Aprire un ticket:</li>
+          <li data-i18n="step5b7_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <p data-i18n="step5b7_p1">Mettere in evidenza il troubleshooting eseguito.</p>
+        <p data-i18n="step5b7_p2" data-i18n-type="html">Assegnare il ticket a <strong>LUX_CIAO_HD2</strong>.</p>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 5C -->
+      <section id="step5C" class="step" role="region" aria-labelledby="step5C-title">
+        <h2 id="step5C-title" class="step-title" data-i18n="step5c_title">Errore su una cassa specifica</h2>
+        <ol>
+          <li data-i18n="step5c_li1">Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.</li>
+          <li data-i18n="step5c_li2" data-i18n-type="html">Su Personality Server effettuare il riavvio delle VM dello store.</li>
+          <li data-i18n="step5c_li3" data-i18n-type="html">Selezionare <strong>Tools</strong> nella voce <strong>Global ISS</strong>.</li>
+          <li data-i18n="step5c_li4" data-i18n-type="html">Eseguire <strong>VM restart-micros pos</strong> e premere <strong>Run this command</strong>.</li>
+          <li data-i18n="step5c_li5" data-i18n-type="html">Eseguire <strong>VM restart-micros posmob</strong> e premere <strong>Run this command</strong>.</li>
+          <li data-i18n="step5c_li6">Riaccendere la Epson dall'apposito pulsante.</li>
+          <li data-i18n="step5c_li7">Attendere 10 minuti e avviare CIAO.</li>
+        </ol>
+        <p data-i18n="step5c_q1">L'errore persiste?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/global iss.png" target="_blank" rel="noopener">
+            <img src="images/global iss.png" class="help-image" alt="Global ISS Tools" data-i18n="alt_globaliss" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/vm micros pos.png" target="_blank" rel="noopener">
+            <img src="images/vm micros pos.png" class="help-image" alt="VM micros pos restart" data-i18n="alt_vmpos" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 8 -->
+      <section id="step8" class="step" role="region" aria-labelledby="step8-title">
+        <h2 id="step8-title" class="step-title" data-i18n="step8_title">Stampante offline / Timeout</h2>
+        <ol>
+          <li data-i18n="step8_li1">Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.</li>
+          <li data-i18n="step8_li2">Spegnere la stampante fiscale Epson dall'apposito pulsante.</li>
+        </ol>
+        <p data-i18n="step8_q1">Il visore è spento?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step8A" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B4" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/time.out.png" target="_blank" rel="noopener">
+            <img src="images/time.out.png" class="help-image" alt="Timeout" data-i18n="alt_timeout" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 8A -->
+      <section id="step8A" class="step" role="region" aria-labelledby="step8A-title">
+        <h2 id="step8A-title" class="step-title" data-i18n="step8a_title">Reset DHCP/Infoblox</h2>
+        <ol>
+          <li data-i18n="step8a_li1">Su Personality Server effettuare la seguente procedura.</li>
+          <li data-i18n="step8a_li2" data-i18n-type="html">Eseguire <strong>set/reset up Infoblox range</strong> nella sezione <strong>VLAN10</strong>.</li>
+          <li data-i18n="step8a_li3">Riaccendere la Epson.</li>
+          <li data-i18n="step8a_li4">Avviare CIAO.</li>
+        </ol>
+        <p data-i18n="step8a_q1">Il problema persiste?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step5B7" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/VLAN10.png" target="_blank" rel="noopener">
+            <img src="images/VLAN10.png" class="help-image" alt="VLAN10" data-i18n="alt_vlan10" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 8F -->
+      <section id="step8F" class="step" role="region" aria-labelledby="step8F-title">
+        <h2 id="step8F-title" class="step-title" data-i18n="step8f_title">La data non corrisponde a quella del sistema</h2>
+        <ol>
+          <li data-i18n="step8f_li1">Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.</li>
+          <li data-i18n="step8f_li2">Spegnere la stampante fiscale Epson dall'apposito pulsante.</li>
+        </ol>
+        <p data-i18n="step8f_q1">Il visore è spento?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step8A" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5B4" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/time.out.png" target="_blank" rel="noopener">
+            <img src="images/time.out.png" class="help-image" alt="Timeout" data-i18n="alt_timeout" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 9 -->
+      <section id="step9" class="step" role="region" aria-labelledby="step9-title">
+        <h2 id="step9-title" class="step-title" data-i18n="step9_title">Stato aperto/chiuso non coerente</h2>
+        <ol>
+          <li data-i18n="step9_li1">Accedere al Backoffice da CIAO.</li>
+          <li data-i18n="step9_li2" data-i18n-type="html">Selezionare l'opzione <strong>Stampante Fiscale</strong>.</li>
+          <li data-i18n="step9_li3" data-i18n-type="html">Selezionare <strong>Aperta</strong> o <strong>Chiusa</strong> (in base al messaggio di errore).</li>
+          <li data-i18n="step9_li4" data-i18n-type="html">Selezionare la stampante fiscale con lo stato errato.</li>
+          <li data-i18n="step9_li5" data-i18n-type="html">Premere il pulsante <strong>Aperta</strong> o <strong>Chiusa</strong> (coerente col messaggio di errore).</li>
+          <li data-i18n="step9_li6">Ripetere l’operazione che si stava tentando di eseguire.</li>
+        </ol>
+        <p data-i18n="step9_q1">L'errore persiste?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step9A" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <div class="image-links">
+          <a href="images/Stampante.errore.png" target="_blank" rel="noopener">
+            <img src="images/Stampante.errore.png" class="help-image" alt="Errore stampante schermata 1" data-i18n="alt_err1" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/Stampante.errore1.png" target="_blank" rel="noopener">
+            <img src="images/Stampante.errore1.png" class="help-image" alt="Errore stampante schermata 2" data-i18n="alt_err2" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/Stampante.errore2.png" target="_blank" rel="noopener">
+            <img src="images/Stampante.errore2.png" class="help-image" alt="Errore stampante schermata 3" data-i18n="alt_err3" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 9A -->
+      <section id="step9A" class="step" role="region" aria-labelledby="step9A-title">
+        <h2 id="step9A-title" class="step-title" data-i18n="step9a_title">Chiusura giornaliera (Z)</h2>
+        <ol>
+          <li data-i18n="step9a_li1" data-i18n-type="html">Da tastierino numerico digitare <strong>2222</strong>.</li>
+          <li data-i18n="step9a_li2" data-i18n-type="html">Premere il tasto <strong>CHIAVE</strong>.</li>
+          <li data-i18n="step9a_li3" data-i18n-type="html">A display verrà proposta la voce <strong>SCELTA FUNZIONE Z</strong>.</li>
+          <li data-i18n="step9a_li4" data-i18n-type="html">Digitare <strong>01</strong> (a display: <strong>CHIUSURA GIORNALIERA</strong>).</li>
+          <li data-i18n="step9a_li5" data-i18n-type="html">Premere <strong>CONTANTI</strong> per avviare la stampa (al termine verrà emesso il tagliandino per l’Agenzia delle Entrate).</li>
+        </ol>
+        <p data-i18n="step9a_p1">Se il problema persiste:</p>
+        <ul>
+          <li data-i18n="step9a_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+          <li data-i18n="step9a_li6">Mettere in evidenza il troubleshooting eseguito.</li>
+          <li data-i18n="step9a_li7" data-i18n-type="html">Assegnare il ticket a <strong>LUX_CIAO_HD2</strong>.</li>
+        </ul>
+        <div class="image-links">
+          <a href="images/tastierino.png" target="_blank" rel="noopener">
+            <img src="images/tastierino.png" class="help-image" alt="Tastierino numerico Epson" data-i18n="alt_keypad" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 10 -->
+      <section id="step10" class="step" role="region" aria-labelledby="step10-title">
+        <h2 id="step10-title" class="step-title" data-i18n="step10_title">Data non corrispondente</h2>
+        <p data-i18n="step10_p1">Verificare la data/ora di sistema su stampante e su CIAO. (Aggiungere qui la procedura ufficiale interna se disponibile.)</p>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 11 -->
+      <section id="step11" class="step" role="region" aria-labelledby="step11-title">
+        <h2 id="step11-title" class="step-title" data-i18n="step11_title">Numero di serie non corrispondente</h2>
+        <ol>
+          <li data-i18n="step11_li1">Spegnere la stampante fiscale.</li>
+          <li data-i18n="step11_li2">Attendere 5 minuti e poi ricollegarla.</li>
+        </ol>
+        <p data-i18n="step11_q1">Il problema è ancora presente?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step11A" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 11A -->
+      <section id="step11A" class="step" role="region" aria-labelledby="step11a-title">
+        <h2 id="step11a-title" class="step-title" data-i18n="step11a_title">Verifica Linked Devices</h2>
+        <ol>
+          <li data-i18n="step11a_li1">Accedere al Personality Server.</li>
+          <li data-i18n="step11a_li2">Cliccare sul pulsante Linked Devices.</li>
+          <li data-i18n="step11a_li3">Verificare se l’IGEL è configurato correttamente con la stampante fiscale.</li>
+        </ol>
+        <div class="image-links">
+          <a href="images/linked_device.png" target="_blank" rel="noopener">
+            <img src="images/linked_device.png" class="help-image" alt="Linked Devices" data-i18n="alt_linked_devices" data-i18n-attr="alt"/>
+          </a>
+          <a href="images/linked_device_2.png" target="_blank" rel="noopener">
+            <img src="images/linked_device_2.png" class="help-image" alt="Linked Devices 2" data-i18n="alt_linked_devices_2" data-i18n-attr="alt"/>
+          </a>
+        </div>
+        <p data-i18n="step11a_q1">Il problema è ancora presente?</p>
+        <div class="buttons-center">
+          <button type="button" class="btn" data-next="step11A1" data-i18n="yes">SÌ</button>
+          <button type="button" class="btn" data-next="step5BB" data-i18n="no">NO</button>
+        </div>
+        <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+      </section>
+
+      <!-- STEP 11A1 -->
+      <section id="step11A1" class="step" role="region" aria-labelledby="step11a1-title">
+        <h2 id="step11a1-title" class="step-title" data-i18n="step11a1_title">Escalation Local IT</h2>
+        <p data-i18n="step11a1_p1">Assegnare il Ticket a <strong>ITALY - LOCAL IT TEAM</strong></p>
+        <ul>
+          <li data-i18n="step11a1_cat" data-i18n-type="html"><strong>Categoria:</strong> IN STORE TECH &gt; SW &gt; CIAO Optical &gt; CIAO - Error Fiscal Printer</li>
+        </ul>
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modale per ingrandimento immagini -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+      <img class="modal-content" id="imgFull" alt="Ingrandimento" onclick="event.stopPropagation()">
+    </div>
+  </div>
+
+  <script>
+/* ===========================
+ Dizionario IT / EN (riuso l'oggetto originale)
+ =========================== */
+const translations = {
+      it: {
+        app_title: "Troubleshooting Stampante Fiscale EPSON",
+        alt_dxc_logo: "Logo DXC",
+        lang_select_title: "Seleziona la lingua / Select language",
+        btn_lang_it: "Italiano 🇮🇹",
+        btn_lang_en: "English 🇬🇧",
+        welcome_title: "Benvenuto",
+
+        btn_next: "AVANTI",
+        btn_back: "⬅ Indietro",
+        btn_copy: "Copia cronologia",
+        yes: "SÌ",
+        no: "NO",
+
+        copy_success: "Troubleshooting copiato negli appunti!",
+        copy_error: "Impossibile copiare negli appunti su questo browser.",
+
+        // STEP 1B
+        step1b_title: "Errore sul visore?",
+        step1b_intro: "Sul display della stampante fiscale appare uno di questi errori?",
+        step1b_li1: "M.F. non fiscale",
+        step1b_li2: "DGFE - Errore di identificazione",
+        step1b_li3: "Periodo inattivo, effettuare chiusura",
+
+        // STEP 2
+        step2_title: "Errore sul visore - Tipologia",
+        step2_intro: "Seleziona un Messaggio:",
+        step2_btn1: "M.F. non fiscale",
+        step2_btn2: "DGFE - Errore di identificazione",
+        step2_btn3: "Periodo inattivo, effettuare chiusura",
+        alt_mf: "Esempio errore M.F. non fiscale",
+        alt_dgfe: "Esempio errore DGFE",
+
+        // 2A
+        step2a_title: "M.F. non fiscale",
+        step2a_p1: "Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.",
+        step2a_ip: "<strong>IP stampante Fiscale:</strong>",
+        cat_label: "<strong>Categoria:</strong> IN STORE TECH > POS HW > Fiscal Printer - CIAO > Error Fiscal Printer",
+
+        // 2B
+        step2b_title: "DGFE - Errore di identificazione",
+        step2b_p1: "Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.",
+        step2b_ip: "<strong>IP stampante Fiscale:</strong>",
+        step2b_cat: "<strong>Categoria:</strong> IN STORE TECH > POS HW > Fiscal Printer - CIAO > Memoria DGFE piena",
+
+        // 2C
+        step2c_title: "Periodo inattivo - Chiusura Z",
+        resolution: "<strong>Risoluzione</strong>",
+        step2c_li0: "Chiedere allo store di chiudere CIAO da tutte le postazioni collegate a quella stampante fiscale (verifica personality Server).",
+        step2c_li1: "Da tastierino numerico digitare <strong>2222</strong>.",
+        step2c_li2: "Premere il tasto <strong>CHIAVE</strong>.",
+        step2c_li3: "A display verrà proposta la voce <strong>SCELTA FUNZIONE Z</strong>.",
+        step2c_li4: "Digitare <strong>01</strong> (a display: <strong>CHIUSURA GIORNALIERA</strong>).",
+        step2c_li5: "Premere il tasto <strong>CONTANTI</strong> per avviare la stampa. Al termine, la EPSON emetterà il tagliandino per l’Agenzia delle Entrate.",
+        step2c_p2: "Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.",
+        step2c_cat: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        alt_keypad: "Tastierino numerico Epson",
+
+        // 2D
+        step2d_title: "Personality Server",
+        step2d_q1: "Su Personality Server la stampante fiscale Risulta pingabile?",
+
+        // 2F
+        step2f_title: "Verifica cablaggio",
+        step2f_li1: "Verifica se qualche cavo è staccato.",
+        step2f_li2: "Verifica se si accende la spia della stampante fiscale.",
+        step2f_li3: "Verificare che il cavo di rete (Ethernet) sia correttamente collegato allo switch Meraki.",
+        step2f_q1: "La stampante fiscale è tornata pingabile?",
+
+        // 2G
+        step2g_title: "Verifica apertura <strong>CIAO</strong>",
+        step2g_li1: "Chiedere allo store di aprire CIAO.",
+        step2g_q1: "CIAO si apre?",
+
+        // 3
+        step3_title: "Errore mostrato da CIAO?",
+        step3_q1: "L'errore è mostrato da CIAO?",
+
+        // 4
+        step4_title: "Seleziona messaggio CIAO",
+        step4_b1: "Si è verificato un errore con la stampante fiscale",
+        step4_b2: "La stampante fiscale selezionata non funziona",
+        step4_b3: "Stampante in stato offline",
+        step4_b4: "Printer time out",
+        step4_b5: "Errore stato previsto aperto/chiuso",
+        step4_b6: "La data non corrisponde a quella del sistema",
+        step4_b7: "Il numero di serie della stampante non corrisponde a quello rilevato in fase di apertura/chiusura",
+
+        // 5
+        step5_title: "Dove si verifica il problema?",
+        step5_q1: "Dove si verifica il problema?",
+        step5_b1: "Su un solo work order",
+        step5_b2: "Su tutte le casse fiscali",
+        step5_b3: "Solo su una cassa specifica",
+        alt_wo: "Esempio errore su un solo work order",
+
+        // 5A
+        step5a_title: "Errore su un solo work order",
+        step5a_p1: "<strong>Inoltrare il ticket a:</strong> SSS North America - POS Triage - 3rd Level Support",
+        step5a_p2: "<strong>Descrizione del problema:</strong>",
+        step5a_li1: "Allegare uno screenshot",
+        step5a_li2: "Nome e cognome del cliente",
+        step5a_li3: "Numero del Work Order specificando che si tratta di un solo ordine",
+        step5a_li4: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+
+        // 5A22
+        step5a22_title: "Chiusura CIAO",
+        step5a22_li1: "Chiudere CIAO con il pulsante “X” in alto a destra",
+        step5a22_li2: "Avviarlo di nuovo.",
+        step5a22_q1: "CIAO si apre?",
+
+        // 5A23
+        step5a23_title: "Verifica stato ordine",
+        step5a23_li1: "Accedere al Back Office",
+        step5a23_li2: "Aprire il Giornale Elettronico",
+        step5a23_li3: "Cercare il Work Order in cui si verifica il problema",
+        step5a23_li4: "Verificare lo stato attuale dell’ordine",
+        orphaned: "ORPHANED",
+        cancelled: "CANCELLED",
+        step5a24_title: "Risolvere il ticket",
+        step5a24_p1: "Comunicare allo store che l’ordine è stato cancellato e che, per questo motivo, non è possibile procedere con l’operazione richiesta.",
+
+        // 5B
+        step5b_title: "Errore su tutte le casse",
+        step5b_li1: "Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.",
+        step5b_li2: "Spegnere la stampante fiscale Epson dall'apposito pulsante.",
+        step5b_q1: "Il visore è spento?",
+
+        // 5BA
+        step5ba_title: "Riaccensione Epson",
+        step5ba_p1: "Riaccendere la Epson dall'apposito pulsante.",
+        step5ba_q1: "Il visore mostra <strong>“STATO DI REGISTRAZIONE”</strong>?",
+
+        // 5B3
+        step5b3_title: "Procedura da tastierino",
+        step5b3_intro: "Eseguire la procedura da tastierino collegato alla stampante fiscale:",
+        step5b3_li1: "Premere il tasto <strong>CL CLEAR</strong>.",
+        step5b3_li2: "Premere il tasto <strong>1</strong>.",
+        step5b3_li3: "Premere il tasto <strong>REP 1</strong>.",
+        step5b3_li4: "Premere il tasto <strong>ALL VOID</strong>.",
+        step5b3_li5: "Premere il tasto <strong>CL CLEAR</strong> nuovamente.",
+        step5b3_p2: "Assicurarsi che la stampante sia tornata in <strong>STATO DI REGISTRAZIONE</strong> sul visore.",
+        step5b3_q1: "Avviare CIAO. Il problema persiste?",
+
+        // 5BB
+        step5bb_title: "Ticket – Risolto",
+        step5bb_p1: "Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.",
+        step5bb_cat: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+
+        // 5B4
+        step5b4_title: "Power cycle completo",
+        step5b4_li1: "Chiedere allo store di spegnere la stampante fiscale utilizzando l’apposito pulsante.",
+        step5b4_li2: "Staccare la presa di corrente (se non raggiungibile: girare la stampante e staccare il primo cavo sulla destra).",
+        step5b4_q1: "Il visore della Epson è spento?",
+        alt_back: "Retro stampante fiscale",
+
+        // 5B6
+        step5b6_title: "Ricollegare alimentazione",
+        step5b6_li1: "Ricollegare il cavo/alimentazione.",
+        step5b6_li2: "Attendere che la stampante diventi nuovamente raggiungibile (pingabile).",
+        step5b6_q1: "Il visore mostra <strong>“STATO DI REGISTRAZIONE”</strong>?",
+
+        // 5B7
+        step5b7_title: "Escalation",
+        step5b7_li1: "Aprire un ticket:",
+        step5b7_cat: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        step5b7_p1: "Mettere in evidenza il troubleshooting eseguito.",
+        step5b7_p2: "Assegnare il ticket a <strong>LUX_CIAO_HD2</strong>.",
+
+        // 5C
+        step5c_title: "Errore su una cassa specifica",
+        step5c_li1: "Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.",
+        step5c_li2: "Su Personality Server effettuare il riavvio delle VM dello store.",
+        step5c_li3: "Selezionare <strong>Tools</strong> nella voce <strong>Global ISS</strong>.",
+        step5c_li4: "Eseguire <strong>VM restart-micros pos</strong> e premere <strong>Run this command</strong>.",
+        step5c_li5: "Eseguire <strong>VM restart-micros posmob</strong> e premere <strong>Run this command</strong>.",
+        step5c_li6: "Riaccendere la Epson dall'apposito pulsante.",
+        step5c_li7: "Attendere 10 minuti e avviare CIAO.",
+        step5c_q1: "L'errore persiste?",
+        alt_globaliss: "Global ISS Tools",
+        alt_vmpos: "VM micros pos restart",
+
+        // 8
+        step8_title: "Stampante offline / Timeout",
+        step8_li1: "Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.",
+        step8_li2: "Spegnere la stampante fiscale Epson dall'apposito pulsante.",
+        step8_q1: "Il visore è spento?",
+        alt_timeout: "Timeout",
+
+        // 8A
+        step8a_title: "Reset DHCP/Infoblox",
+        step8a_li1: "Su Personality Server effettuare la seguente procedura.",
+        step8a_li2: "Eseguire <strong>set/reset up Infoblox range</strong> nella sezione <strong>VLAN10</strong>.",
+        step8a_li3: "Riaccendere la Epson.",
+        step8a_li4: "Avviare CIAO.",
+        step8a_q1: "Il problema persiste?",
+        alt_vlan10: "VLAN10",
+
+        // 8F
+        step8f_title: "La data non corrisponde a quella del sistema",
+        step8f_li1: "Chiudere CIAO da tutte le postazioni con il pulsante “X” in alto a destra.",
+        step8f_li2: "Spegnere la stampante fiscale Epson dall'apposito pulsante.",
+        step8f_q1: "Il visore è spento?",
+
+        // 9
+        step9_title: "Stato aperto/chiuso non coerente",
+        step9_li1: "Accedere al Backoffice da CIAO.",
+        step9_li2: "Selezionare l'opzione <strong>Stampante Fiscale</strong>.",
+        step9_li3: "Selezionare <strong>Aperta</strong> o <strong>Chiusa</strong> (in base al messaggio di errore).",
+        step9_li4: "Selezionare la stampante fiscale con lo stato errato.",
+        step9_li5: "Premere il pulsante <strong>Aperta</strong> o <strong>Chiusa</strong> (coerente col messaggio di errore).",
+        step9_li6: "Ripetere l’operazione che si stava tentando di eseguire.",
+        step9_q1: "L'errore persiste?",
+        alt_err1: "Errore stampante schermata 1",
+        alt_err2: "Errore stampante schermata 2",
+        alt_err3: "Errore stampante schermata 3",
+
+        // 9A
+        step9a_title: "Chiusura giornaliera (Z)",
+        step9a_li1: "Da tastierino numerico digitare <strong>2222</strong>.",
+        step9a_li2: "Premere il tasto <strong>CHIAVE</strong>.",
+        step9a_li3: "A display verrà proposta la voce <strong>SCELTA FUNZIONE Z</strong>.",
+        step9a_li4: "Digitare <strong>01</strong> (a display: <strong>CHIUSURA GIORNALIERA</strong>).",
+        step9a_li5: "Premere <strong>CONTANTI</strong> per avviare la stampa (al termine verrà emesso il tagliandino per l’Agenzia delle Entrate).",
+        step9a_p1: "Se il problema persiste:",
+        step9a_cat: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        step9a_li6: "Mettere in evidenza il troubleshooting eseguito.",
+        step9a_li7: "Assegnare il ticket a <strong>LUX_CIAO_HD2</strong>.",
+
+        // 10
+        step10_title: "Data non corrispondente",
+        step10_p1: "Verificare la data/ora di sistema su stampante e su CIAO. (Aggiungere qui la procedura ufficiale interna se disponibile.)",
+
+        // 11
+        step11_title: "Numero di serie non corrispondente",
+        step11_li1: "Spegnere la stampante fiscale.",
+        step11_li2: "Attendere 5 minuti e poi ricollegarla.",
+        step11_q1: "Il problema è ancora presente?",
+        step11a_title: "Verifica Linked Devices",
+        step11a_li1: "Accedere al Personality Server.",
+        step11a_li2: "Cliccare sul pulsante Linked Devices.",
+        step11a_li3: "Verificare se l’IGEL è configurato correttamente con la stampante fiscale.",
+        step11a_q1: "Il problema è ancora presente?",
+        step11a1_title: "Escalation Local IT",
+        step11a1_p1: "Assegnare il Ticket a <strong>ITALY - LOCAL IT TEAM</strong>",
+        step11a1_cat: "<strong>Categoria:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer"
+      },
+
+      en: {
+        app_title: "EPSON Fiscal Printer Troubleshooting",
+        alt_dxc_logo: "DXC Logo",
+        lang_select_title: "Select language / Seleziona la lingua",
+        btn_lang_it: "Italiano 🇮🇹",
+        btn_lang_en: "English 🇬🇧",
+        welcome_title: "Welcome",
+
+        btn_next: "NEXT",
+        btn_back: "⬅ Back",
+        btn_copy: "Copy troubleshooting",
+        yes: "YES",
+        no: "NO",
+
+        copy_success: "Troubleshooting copied to clipboard!",
+        copy_error: "Unable to copy to clipboard in this browser.",
+
+        // STEP 1B
+        step1b_title: "Error on the display?",
+        step1b_intro: "Does the fiscal printer display one of these errors?",
+        step1b_li1: "Non-fiscal M.F.",
+        step1b_li2: "DGFE - Identification error",
+        step1b_li3: "Inactive period, perform closure",
+
+        // 2
+        step2_title: "Display error – Type",
+        step2_intro: "Select a message:",
+        step2_btn1: "Non-fiscal M.F.",
+        step2_btn2: "DGFE - Identification error",
+        step2_btn3: "Inactive period, perform closure",
+        alt_mf: "Example of Non‑fiscal M.F. error",
+        alt_dgfe: "Example of DGFE error",
+
+        // 2A
+        step2a_title: "Non-fiscal M.F.",
+        step2a_p1: "Open a ticket and assign it to <strong>LUX_Epson_BBC</strong>, attaching a photo of the display and the fiscal printer.",
+        step2a_ip: "<strong>Fiscal Printer IP:</strong>",
+        cat_label: "<strong>Category:</strong> IN STORE TECH > POS HW > Fiscal Printer - CIAO > Error Fiscal Printer",
+
+        // 2B
+        step2b_title: "DGFE - Identification error",
+        step2b_p1: "Open a ticket and assign it to <strong>LUX_Epson_BBC</strong>, attaching a photo of the display and the fiscal printer.",
+        step2b_ip: "<strong>Fiscal Printer IP:</strong>",
+        step2b_cat: "<strong>Category:</strong> IN STORE TECH > POS HW > Fiscal Printer - CIAO > DGFE memory full",
+
+        // 2C
+        step2c_title: "Inactive period – Z closure",
+        resolution: "<strong>Resolution</strong>",
+        step2c_li0: "Ask the store to close CIAO on all stations linked to that fiscal printer (check personality Server).",
+        step2c_li1: "On the keypad, enter <strong>2222</strong>.",
+        step2c_li2: "Press the <strong>KEY</strong> button.",
+        step2c_li3: "The display will show <strong>SELECT Z FUNCTION</strong>.",
+        step2c_li4: "Enter <strong>01</strong> (display shows: <strong>DAILY CLOSURE</strong>).",
+        step2c_li5: "Press <strong>CASH</strong> to start printing. At the end, the EPSON will print the receipt for the Revenue Agency.",
+        step2c_p2: "Open a ticket including all steps performed and close it.",
+        step2c_cat: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        alt_keypad: "Epson numeric keypad",
+
+        // 2D
+        step2d_title: "Personality Server",
+        step2d_q1: "Is the fiscal printer pingable from Personality Server?",
+
+        // 2F
+        step2f_title: "Check cabling",
+        step2f_li1: "Check if any cable is disconnected.",
+        step2f_li2: "Check if the fiscal printer’s indicator light turns on.",
+        step2f_li3: "Check whether the Ethernet network cable is correctly connected to the Meraki switch.",
+        step2f_q1: "Has the fiscal printer become pingable again?",
+
+        // 2G
+        step2g_title: "Check if <strong>CIAO</strong> opens",
+        step2g_li1: "Ask the store to open CIAO.",
+        step2g_q1: "Does CIAO open?",
+
+        // 3
+        step3_title: "Error shown by CIAO?",
+        step3_q1: "Is the error displayed by CIAO?",
+
+        // 4
+        step4_title: "Select the CIAO message",
+        step4_b1: "A fiscal printer error has occurred",
+        step4_b2: "The selected fiscal printer is not working",
+        step4_b3: "Printer offline",
+        step4_b4: "Printer timeout",
+        step4_b5: "Expected open/closed state mismatch",
+        step4_b6: "The date does not match the system date",
+        step4_b7: "The printer serial number does not match the one detected at open/close",
+
+        // 5
+        step5_title: "Where does the issue occur?",
+        step5_q1: "Where does the issue occur?",
+        step5_b1: "On a single work order",
+        step5_b2: "On all fiscal registers",
+        step5_b3: "Only on a specific register",
+        alt_wo: "Example error on a single work order",
+
+        // 5A
+        step5a_title: "Error on a single work order",
+        step5a_p1: "<strong>Forward the ticket to:</strong> SSS North America - POS Triage - 3rd Level Support",
+        step5a_p2: "<strong>Problem description:</strong>",
+        step5a_li1: "Attach a screenshot",
+        step5a_li2: "Customer’s first and last name",
+        step5a_li3: "Work Order number specifying that it concerns a single order",
+        step5a_li4: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+
+        // 5A22
+        step5a22_title: "Close CIAO",
+        step5a22_li1: "Close the CIAO app using the “X” button in the top‑right corner",
+        step5a22_li2: "Launch it again.",
+        step5a22_q1: "Does CIAO open?",
+
+        // 5A23
+        step5a23_title: "Order status check",
+        step5a23_li1: "Go to the Back Office",
+        step5a23_li2: "Access the Electronic Journal",
+        step5a23_li3: "Search for the Work Order where the issue occurs",
+        step5a23_li4: "Check the current status of the order",
+        orphaned: "ORPHANED",
+        cancelled: "CANCELLED",
+        step5a24_title: "Resolve the ticket",
+        step5a24_p1: "Inform the store that the order has been cancelled, which is why it is not possible to proceed with the requested operation.",
+
+        // 5B
+        step5b_title: "Error on all registers",
+        step5b_li1: "Close CIAO on all stations using the “X” button at the top-right.",
+        step5b_li2: "Turn off the Epson fiscal printer using its power button.",
+        step5b_q1: "Is the display off?",
+
+        // 5BA
+        step5ba_title: "Turn Epson back on",
+        step5ba_p1: "Turn the Epson back on using its power button.",
+        step5ba_q1: "Does the display show <strong>“REGISTRATION STATE”</strong>?",
+
+        // 5B3
+        step5b3_title: "Keypad procedure",
+        step5b3_intro: "Run the procedure on the keypad connected to the fiscal printer:",
+        step5b3_li1: "Press <strong>CL CLEAR</strong>.",
+        step5b3_li2: "Press <strong>1</strong>.",
+        step5b3_li3: "Press <strong>REP 1</strong>.",
+        step5b3_li4: "Press <strong>ALL VOID</strong>.",
+        step5b3_li5: "Press <strong>CL CLEAR</strong> again.",
+        step5b3_p2: "Make sure the printer is back to <strong>REGISTRATION STATE</strong> on the display.",
+        step5b3_q1: "Start CIAO. Does the issue persist?",
+
+        // 5BB
+        step5bb_title: "Ticket – Resolved",
+        step5bb_p1: "Open a ticket including all steps performed and close it.",
+        step5bb_cat: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+
+        // 5B4
+        step5b4_title: "Full power cycle",
+        step5b4_li1: "Ask the store to turn off the fiscal printer using its power button.",
+        step5b4_li2: "Unplug the power (if unreachable: turn the printer around and unplug the first cable on the right).",
+        step5b4_q1: "Is the Epson display off?",
+        alt_back: "Back of the fiscal printer",
+
+        // 5B6
+        step5b6_title: "Reconnect power",
+        step5b6_li1: "Reconnect the cable/power.",
+        step5b6_li2: "Wait for the printer to become reachable (pingable) again.",
+        step5b6_q1: "Does the display show <strong>“REGISTRATION STATE”</strong>?",
+
+        // 5B7
+        step5b7_title: "Escalation",
+        step5b7_li1: "Open a ticket:",
+        step5b7_cat: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        step5b7_p1: "Highlight the troubleshooting already performed.",
+        step5b7_p2: "Assign the ticket to <strong>LUX_CIAO_HD2</strong>.",
+
+        // 5C
+        step5c_title: "Error on a specific register",
+        step5c_li1: "Close CIAO on all stations using the “X” button at the top-right.",
+        step5c_li2: "On Personality Server, restart the store VMs.",
+        step5c_li3: "Select <strong>Tools</strong> under <strong>Global ISS</strong>.",
+        step5c_li4: "Run <strong>VM restart-micros pos</strong> and click <strong>Run this command</strong>.",
+        step5c_li5: "Run <strong>VM restart-micros posmob</strong> and click <strong>Run this command</strong>.",
+        step5c_li6: "Turn the Epson back on with its power button.",
+        step5c_li7: "Wait 10 minutes and start CIAO.",
+        step5c_q1: "Does the error persist?",
+        alt_globaliss: "Global ISS Tools",
+        alt_vmpos: "VM micros pos restart",
+
+        // 8
+        step8_title: "Printer offline / Timeout",
+        step8_li1: "Close CIAO on all stations using the “X” button at the top-right.",
+        step8_li2: "Turn off the Epson fiscal printer using its power button.",
+        step8_q1: "Is the display off?",
+        alt_timeout: "Timeout",
+
+        // 8A
+        step8a_title: "DHCP/Infoblox reset",
+        step8a_li1: "On Personality Server, perform the following.",
+        step8a_li2: "Run <strong>set/reset up Infoblox range</strong> in the <strong>VLAN10</strong> section.",
+        step8a_li3: "Turn the Epson back on.",
+        step8a_li4: "Start CIAO.",
+        step8a_q1: "Does the issue persist?",
+        alt_vlan10: "VLAN10",
+
+        // 8F
+        step8f_title: "The date does not match the system date",
+        step8f_li1: "Close CIAO on all stations using the “X” button at the top-right.",
+        step8f_li2: "Turn off the Epson fiscal printer using its power button.",
+        step8f_q1: "Is the display off?",
+
+        // 9
+        step9_title: "Open/closed state mismatch",
+        step9_li1: "Access Backoffice from CIAO.",
+        step9_li2: "Select the <strong>Fiscal Printer</strong> option.",
+        step9_li3: "Select <strong>Open</strong> or <strong>Closed</strong> (according to the error message).",
+        step9_li4: "Select the fiscal printer with the incorrect state.",
+        step9_li5: "Click <strong>Open</strong> or <strong>Closed</strong> (matching the error message).",
+        step9_li6: "Repeat the operation you were trying to perform.",
+        step9_q1: "Does the error persist?",
+        alt_err1: "Printer error – screen 1",
+        alt_err2: "Printer error – screen 2",
+        alt_err3: "Printer error – screen 3",
+
+        // 9A
+        step9a_title: "Daily closure (Z)",
+        step9a_li1: "On the keypad, enter <strong>2222</strong>.",
+        step9a_li2: "Press the <strong>KEY</strong> button.",
+        step9a_li3: "The display will show <strong>SELECT Z FUNCTION</strong>.",
+        step9a_li4: "Enter <strong>01</strong> (display shows: <strong>DAILY CLOSURE</strong>).",
+        step9a_li5: "Press <strong>CASH</strong> to start printing (a receipt for the Revenue Agency will be printed).",
+        step9a_p1: "If the issue persists:",
+        step9a_cat: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer",
+        step9a_li6: "Highlight the troubleshooting already performed.",
+        step9a_li7: "Assign the ticket to <strong>LUX_CIAO_HD2</strong>.",
+
+        // 10
+        step10_title: "Date mismatch",
+        step10_p1: "Check the system date/time on the printer and in CIAO. (Add the official internal procedure here if available.)",
+
+        // 11
+        step11_title: "Serial number mismatch",
+        step11_li1: "Turn off the fiscal printer.",
+        step11_li2: "Wait 5 minutes and then reconnect it.",
+        step11_q1: "Is the issue still occurring?",
+        step11a_title: "Linked Devices check",
+        step11a_li1: "Go to the Personality Server.",
+        step11a_li2: "Click on the Linked Devices button.",
+        step11a_li3: "Verify whether the IGEL is correctly configured with the fiscal printer.",
+        step11a_q1: "Is the issue still present?",
+        step11a1_title: "Local IT Escalation",
+        step11a1_p1: "Assign the ticket to <strong>ITALY – LOCAL IT TEAM</strong>.",
+        step11a1_cat: "<strong>Category:</strong> IN STORE TECH > SW > CIAO Optical > CIAO - Error Fiscal Printer"
+      }
+    };
+
+/* ===========================
+ Navigazione
+ =========================== */
+const historyStack = [];
+let currentStepId = "langSelect"; // partenza dalla selezione lingua
+const visited = new Set();
+let language = "it";
+
+
+const clickTrail = [];
+window.addEventListener('DOMContentLoaded', () => {
+  showStep(currentStepId);
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('button');
+    if (!target) return;
+    const nextId = target.getAttribute('data-next');
+    if (nextId) {
+      try {
+        const itLabel = getTextFromI18n(target, 'it');
+        const enLabel = getTextFromI18n(target, 'en');
+        clickTrail.push({ stepId: currentStepId, it: itLabel, en: enLabel });
+      } catch (err) { /* ignore */ }
+      goTo(nextId); return;
+    }
+    if (target.hasAttribute('data-back')) { goBack(); return; }
+    if (target.hasAttribute('data-copy')) { copyHistory(); return; }
+  });
+
+  // Gestione ingrandimento immagini
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('.image-links a');
+    if (link) {
+      e.preventDefault();
+      openModal(link.href);
+    }
+  });
+});
+
+function showStep(stepId){
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('is-active'));
+  const stepEl = document.getElementById(stepId);
+  if (stepEl){
+    stepEl.classList.add('is-active');
+    const main = document.getElementById('steps');
+    if (main) main.focus();
+    visited.add(stepId);
+  }
+}
+function goTo(stepId){
+  if (stepId === currentStepId) return;
+  historyStack.push(currentStepId);
+  currentStepId = stepId;
+  showStep(stepId);
+}
+function goBack(){
+  if (!historyStack.length) return;
+  currentStepId = historyStack.pop();
+  showStep(currentStepId);
+}
+
+function openModal(src) {
+  const modal = document.getElementById('imageModal');
+  const img = document.getElementById('imgFull');
+  img.src = src;
+  modal.classList.add('is-visible');
+}
+function closeModal() {
+  document.getElementById('imageModal').classList.remove('is-visible');
+}
+
+/// --- i18n helpers (versione pulita) ---
+function t(key) {
+  // fallback: it -> key
+  if (translations[language] && translations[language][key] != null) {
+    return translations[language][key];
+  }
+  if (translations.it && translations.it[key] != null) {
+    return translations.it[key];
+  }
+  return key;
+}
+
+function looksLikeHtml(str) {
+  // check semplice: se contiene <tag> o entità &...;
+  const s = String(str || "");
+  return /<[^>]+>/.test(s) || /&[a-zA-Z#0-9]+;/.test(s);
+}
+
+function applyTranslations() {
+  document.documentElement.setAttribute("lang", language);
+  const titleEl = document.querySelector("title[data-i18n='app_title']");
+  if (titleEl) titleEl.textContent = t("app_title");
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    const attr = el.getAttribute("data-i18n-attr");
+    const type = el.getAttribute("data-i18n-type");
+
+    if (attr) {
+      attr.split(",").forEach(a => el.setAttribute(a.trim(), val));
+    } else if (type === "html" || looksLikeHtml(val)) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+}
+
+function setLanguage(lang) {
+  language = (lang === "en") ? "en" : "it";
+  applyTranslations();
+
+  // se siamo nella selezione lingua, passiamo allo step1
+  if (currentStepId === "langSelect") {
+    historyStack.length = 0;
+    historyStack.push("langSelect");
+    currentStepId = "step1";
+    showStep(currentStepId);
+  }
+}
+
+// --- helpers per copia ---
+function stripHTML(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+function getTextFromI18n(el, langCode) {
+  const key = el.getAttribute("data-i18n");
+  const type = el.getAttribute("data-i18n-type");
+  if (key) {
+    let val =
+      (translations[langCode] && translations[langCode][key]) ||
+      (translations.it && translations.it[key]) ||
+      "";
+
+    if (!val) return (el.innerText || "").trim();
+    if (type === "html" || looksLikeHtml(val)) return stripHTML(val);
+    return String(val).trim();
+  }
+  return (el.innerText || "").trim();
+}
+
+function copyHistory() {
+  const prefixEn = 'The store reported issues with opening the "Ciao" application. Please find below the troubleshooting steps performed and the checks carried out';
+  const prefixIt = 'Lo store ha segnalato problemi nell’apertura dell’applicativo "Ciao". Di seguito il troubleshooting effettuato e le verifiche eseguite.';
+
+  const choiceByStep = {};
+  clickTrail.forEach(c => { if (c.stepId) choiceByStep[c.stepId] = c; });
+  const SKIP_STEPS = new Set(['langSelect','step1']);
+
+  // Build bullets-only with blank line between steps
+  const buildSection = (langCode) => {
+    let sec = '';
+    const allSteps = Array.from(visited);
+    if (!allSteps.includes(currentStepId)) allSteps.push(currentStepId);
+    allSteps.forEach((stepId, idx) => {
+      if (SKIP_STEPS.has(stepId)) return;
+      const step = document.getElementById(stepId);
+      if (!step) return;
+
+      const ch = choiceByStep[stepId];
+      const chosen = ch ? (langCode === 'en' ? ch.en : ch.it) : '';
+
+      // Emit lines
+      let appendedChoice = false;
+      const lines = step.querySelectorAll('p, li');
+      lines.forEach(node => {
+        let line = getTextFromI18n(node, langCode);
+        if (!line) return;
+
+        const isLi = node.tagName.toLowerCase() === 'li';
+        const bullet = isLi ? '\t• ' : '• ';
+
+        if (!appendedChoice && chosen && node.tagName.toLowerCase() === 'p') {
+          line = `${line} → ${chosen}`;
+          appendedChoice = true;
+        }
+        sec += `${bullet}${line}\n`;
+      });
+      if (chosen && !appendedChoice) {
+        sec += `→ ${chosen}\n`;
+      }
+      // blank line between steps
+      sec += `\n`;
+    });
+    return sec.trim();
+  };
+
+  const itSection = buildSection('it');
+  const enSection = buildSection('en');
+
+  const finalOutput = `${prefixIt}\n\n${itSection ? itSection + '\n' : ''}\n--------------------------------------\n\n${prefixEn}\n\n${enSection}`;
+
+  navigator.clipboard.writeText(finalOutput)
+    .then(() => alert(t('copy_success')))
+    .catch(() => alert(t('copy_error')));
+}
+
+
+</script>
+</body>
+</html>
