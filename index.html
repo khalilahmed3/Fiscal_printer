@@ -433,10 +433,7 @@
       <!-- STEP 5BB -->
       <section id="step5BB" class="step" role="region" aria-labelledby="step5BB-title">
         <h2 id="step5BB-title" class="step-title" data-i18n="step5bb_title">Ticket – Risolto</h2>
-        <p data-i18n="step5bb_p1">Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.</p>
-        <ul>
-          <li data-i18n="step5bb_cat" data-i18n-type="html"><strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; SW &gt; CIAO - ERROR FISCAL PRINTER<br><strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO SUN  &gt; SW &gt; CIAO - ERROR FISCAL PRINTER</li>
-        </ul>
+        <p data-i18n="step5bb_p1">Problema risolto.</p>
         <div class="bottom-actions">
           <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
           <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
@@ -857,9 +854,7 @@ const translations = {
 
         // 5BB
         step5bb_title: "Ticket – Risolto",
-        step5bb_p1: "Aprire un ticket indicando tutti gli step eseguiti e chiuderlo.",
-        step5bb_cat: "<strong>Categoria:</strong> RETAIL > APPLICATION > CIAO OPTICAL > SW > CIAO - ERROR FISCAL PRINTER<br><strong>Categoria:</strong> RETAIL > APPLICATION > CIAO SUN  > SW > CIAO - ERROR FISCAL PRINTER",
-
+        step5bb_p1: "Problema risolto.",
         // 5B4
         step5b4_title: "Power cycle completo",
         step5b4_li1: "Chiedere allo store di spegnere la stampante fiscale utilizzando l’apposito pulsante.",
@@ -1105,9 +1100,7 @@ const translations = {
 
         // 5BB
         step5bb_title: "Ticket – Resolved",
-        step5bb_p1: "Open a ticket including all steps performed and close it.",
-        step5bb_cat: "<strong>Category:</strong> RETAIL > APPLICATION > CIAO OPTICAL > SW > CIAO - ERROR FISCAL PRINTER<br><strong>Category:</strong> RETAIL > APPLICATION > CIAO SUN  > SW > CIAO - ERROR FISCAL PRINTER",
-
+        step5bb_p1: "Issue resolved.",
         // 5B4
         step5b4_title: "Full power cycle",
         step5b4_li1: "Ask the store to turn off the fiscal printer using its power button.",
@@ -1329,6 +1322,151 @@ function setLanguage(lang) {
   }
 }
 
+const copyTemplates = {
+  step2: {
+    it: "Sul visore della stampante fiscale risulta il seguente errore: ",
+    en: "On the display of the fiscal printer, the following error is shown: "
+  },
+  step2c: {
+    it: "Abbiamo eseguito la chiusura di giornata e il problema è stato risolto.",
+    en: "We performed the end-of-day closure and the issue has been resolved."
+  },
+  step2d: {
+    yes: {
+      it: "La stampante fiscale risulta pingabile.",
+      en: "The fiscal printer is pingable."
+    },
+    no: {
+      it: "La stampante fiscale risulta non pingabile.",
+      en: "The fiscal printer is not pingable."
+    }
+  },
+  step2f: {
+    it: "Abbiamo verificato i cavi e il loro corretto collegamento.",
+    en: "We have checked the cables and verified that they are properly connected."
+  },
+  step4: {
+    it: "L’errore mostrato su Ciao è: ",
+    en: "The error shown in Ciao is: "
+  },
+  step5: {
+    it: "Il problema è relativo a: ",
+    en: "The issue is related to: "
+  },
+  step5a22: {
+    yes: {
+      it: "Abbiamo riavviato Ciao senza problemi.",
+      en: "We restarted Ciao without any issues."
+    },
+    no: {
+      it: "Dopo aver riavviato Ciao, non si apre più.",
+      en: "After restarting Ciao, it no longer opens."
+    }
+  },
+  step5a23: {
+    it: "Controllando il giornale elettronico, abbiamo trovato il WO nello stato ",
+    en: "By checking the electronic journal, we found the WO in status "
+  },
+  step5a24: {
+    it: "Abbiamo informato lo store dello stato del WO, quindi non è possibile procedere.",
+    en: "We informed the store of the WO status, so the requested action cannot proceed."
+  },
+  step5b: {
+    yes: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; il visore si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; the display turned off."
+    },
+    no: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; tuttavia, il visore non si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; however, the display did not turn off."
+    }
+  },
+  step5ba: {
+    yes: {
+      it: "Il visore mostra “STATO DI REGISTRAZIONE”.",
+      en: "The display shows “REGISTRATION STATUS”."
+    },
+    no: {
+      it: "Il visore non mostra “STATO DI REGISTRAZIONE”.",
+      en: "The display does not show “REGISTRATION STATUS”."
+    }
+  },
+  step5bb: {
+    it: "Problema risolto.",
+    en: "Issue resolved."
+  },
+  step5b4: {
+    yes: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; il visore si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; the display turned off."
+    },
+    no: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; tuttavia, il visore non si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; however, the display did not turn off."
+    }
+  },
+  step5b6: {
+    yes: {
+      it: "Il visore mostra “STATO DI REGISTRAZIONE”.",
+      en: "The display shows “REGISTRATION STATUS”."
+    },
+    no: {
+      it: "Il visore non mostra “STATO DI REGISTRAZIONE”.",
+      en: "The display does not show “REGISTRATION STATUS”."
+    }
+  },
+  step5c: {
+    it: "Abbiamo eseguito i comandi VM restart-micros pos e VM restart-micros posmob.",
+    en: "We executed the commands VM restart-micros pos and VM restart-micros posmob."
+  },
+  step8: {
+    yes: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; il visore si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; the display turned off."
+    },
+    no: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; tuttavia, il visore non si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; however, the display did not turn off."
+    }
+  },
+  step8a: {
+    it: "Abbiamo eseguito il comando set/reset up Infoblox range.",
+    en: "We executed the set/reset up Infoblox range command."
+  },
+  step8f: {
+    yes: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; il visore si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; the display turned off."
+    },
+    no: {
+      it: "Abbiamo chiuso Ciao su tutte le postazioni e la stampante fiscale; tuttavia, il visore non si è spento.",
+      en: "We closed Ciao on all workstations and the fiscal printer; however, the display did not turn off."
+    }
+  },
+  step9: {
+    it: "Abbiamo acceduto al Backoffice CIAO e aggiornato lo stato della stampante fiscale (Aperta/Chiusa).",
+    en: "We accessed the CIAO Backoffice and updated the fiscal printer status (Open/Closed)."
+  },
+  step9a: {
+    it: "Dal tastierino della stampante fiscale abbiamo eseguito il report Z.",
+    en: "Using the fiscal printer keypad, we executed the Z report."
+  },
+  step11: {
+    yes: {
+      it: "Abbiamo chiuso la stampante fiscale, atteso 5 minuti e il problema è stato risolto.",
+      en: "We closed the fiscal printer, waited 5 minutes, and the issue was resolved."
+    },
+    no: {
+      it: "Abbiamo chiuso la stampante fiscale, atteso 5 minuti, ma il problema non è stato risolto.",
+      en: "We closed the fiscal printer, waited 5 minutes, but the issue was not resolved."
+    }
+  },
+  step11a: {
+    it: "Abbiamo verificato che la stampante fiscale è collegata su tutti gli IGEL.",
+    en: "We verified that the fiscal printer is linked on all IGEL devices."
+  }
+};
+
 // --- helpers per copia ---
 function stripHTML(html) {
   const tmp = document.createElement("div");
@@ -1353,52 +1491,47 @@ function getTextFromI18n(el, langCode) {
 }
 
 function copyHistory() {
-  const prefixEn = 'The store reported issues with opening the "Ciao" application. Please find below the troubleshooting steps performed and the checks carried out';
-  const prefixIt = 'Lo store ha segnalato problemi nell’apertura dell’applicativo "Ciao". Di seguito il troubleshooting effettuato e le verifiche eseguite.';
+  const prefixEn = 'The store reported issues with opening the "Ciao" application';
+  const prefixIt = 'Lo store ha segnalato problemi nell’apertura dell’applicativo "Ciao"';
 
   const choiceByStep = {};
-  clickTrail.forEach(c => { if (c.stepId) choiceByStep[c.stepId] = c; });
-  const SKIP_STEPS = new Set(['langSelect', 'step1']);
+  clickTrail.forEach(c => {
+    if (c.stepId) choiceByStep[c.stepId] = c;
+  });
+  
+  const SKIP_STEPS = new Set(['langSelect', 'step1', 'step1B', 'step2A', 'step2B', 'step2G', 'step3', 'step5A', 'step5B3', 'step5B7', 'step10', 'step11A1']);
 
   const buildSection = (langCode) => {
-    let sec = '';
+    let lines = [];
     const allSteps = [...historyStack, currentStepId].filter(id => !SKIP_STEPS.has(id));
-    const ansLabel  = langCode === 'it' ? ' => Risposta: ' : ' => Answer: ';
-    const stepLabel = langCode === 'it' ? 'Passaggio' : 'Step';
-    const stepCount = allSteps.length;
 
-    allSteps.forEach((stepId, index) => {
-      const step = document.getElementById(stepId);
-      if (!step) return;
+    allSteps.forEach(stepId => {
+      const stepIdLower = stepId.toLowerCase();
+      const template = copyTemplates[stepIdLower];
+      if (!template) return;
 
-      const titleEl = step.querySelector('h2');
-      const titleText = titleEl ? getTextFromI18n(titleEl, langCode) : stepId;
+      let text = '';
+      const choice = choiceByStep[stepId];
 
-      sec += `[ ${stepLabel} ${index + 1}/${stepCount} — ${titleText} ]\n`;
-
-      const ch = choiceByStep[stepId];
-      const chosen = ch ? (langCode === 'en' ? ch.en : ch.it) : '';
-
-      let appendedChoice = false;
-      const lines = step.querySelectorAll('p, li');
-      lines.forEach(node => {
-        let line = getTextFromI18n(node, langCode);
-        if (!line) return;
-        if (!appendedChoice && chosen && node.tagName.toLowerCase() === 'p') {
-          line = `${line}${ansLabel}${chosen}`;
-          appendedChoice = true;
+      if (typeof template === 'string' || (typeof template.it === 'string' && typeof template.en === 'string')) {
+        text = langCode === 'it' ? template.it : template.en;
+        if (choice && (stepIdLower === 'step2' || stepIdLower === 'step4' || stepIdLower === 'step5' || stepIdLower === 'step5a23')) {
+          const choiceText = langCode === 'it' ? choice.it : choice.en;
+          text += `"${choiceText}"`;
         }
-        sec += `  • ${line}\n`;
-      });
-
-      if (chosen && !appendedChoice) {
-        sec += `  ${ansLabel}${chosen}\n`;
+      } else if (choice) {
+        const choiceKey = choice.en.toLowerCase() === 'yes' ? 'yes' : 'no';
+        if (template[choiceKey]) {
+          text = langCode === 'it' ? template[choiceKey].it : template[choiceKey].en;
+        }
       }
-
-      sec += `\n`;
+      
+      if (text) {
+        lines.push(`- ${text}`);
+      }
     });
 
-    return sec.trim();
+    return lines.join('\n');
   };
 
   const itSection = buildSection('it');
@@ -1410,7 +1543,6 @@ function copyHistory() {
     .then(() => alert(t('copy_success')))
     .catch(() => alert(t('copy_error')));
 }
-
 
 </script>
 </body>
