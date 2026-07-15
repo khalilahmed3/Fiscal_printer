@@ -250,7 +250,8 @@
         </div>
         <div class="buttons-center">
           <button type="button" class="btn" data-next="step2G" data-i18n="yes">SÌ</button>
-          <button type="button" class="btn" data-next="step2B" data-i18n="no">NO</button>
+          
+          <button type="button" class="btn" data-next="step2B0" data-i18n="no">NO</button>
         </div>
         <div class="bottom-actions">
           <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
@@ -434,6 +435,43 @@
       <section id="step5BB" class="step" role="region" aria-labelledby="step5BB-title">
         <h2 id="step5BB-title" class="step-title" data-i18n="step5bb_title">Ticket – Risolto</h2>
         <p data-i18n="step5bb_p1">Problema risolto.</p>
+        <p data-i18n="step5bb_p2">Aprire un ticket e risolverlo.</p>
+        <ul>
+          <li data-i18n="step5bb_cat" data-i18n-type="html"><strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; SW &gt; CIAO - ERROR FISCAL PRINTER</li>
+        </ul>
+
+        
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 2B0 -->
+      <section id="step2B0" class="step" role="region" aria-labelledby="step2B0-title">
+        <h2 id="step2B0-title" class="step-title" data-i18n="step2b0_title">Problema stampante fiscale</h2>
+        <p data-i18n="step2b0_p1" data-i18n-type="html">Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.</p>
+        <ul>
+          <li data-i18n="step5bb_cat" data-i18n-type="html"><strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; SW &gt; CIAO - ERROR FISCAL PRINTER</li>
+        </ul>
+
+        
+        <div class="bottom-actions">
+          <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
+          <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
+        </div>
+      </section>
+
+      <!-- STEP 2B0 -->
+      <section id="step2B0" class="step" role="region" aria-labelledby="step2B0-title">
+        <h2 id="step2B0-title" class="step-title" data-i18n="step2b0_title">Problema stampante fiscale</h2>
+        <p data-i18n="step2b0_p1" data-i18n-type="html">
+          Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.
+        </p>
+        <p data-i18n="step2b0_ip" data-i18n-type="html"><strong>IP stampante Fiscale:</strong></p>
+        <ul>
+          <li data-i18n="step2b0_cat" data-i18n-type="html"><strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; HW &gt; CIAO - ERROR FISCAL PRINTER</li>
+        </ul>
         <div class="bottom-actions">
           <button type="button" class="btn-secondary back" data-back data-i18n="btn_back">⬅ Indietro</button>
           <button type="button" class="btn" data-copy data-i18n="btn_copy">Copia cronologia</button>
@@ -855,6 +893,13 @@ const translations = {
         // 5BB
         step5bb_title: "Ticket – Risolto",
         step5bb_p1: "Problema risolto.",
+        step5bb_p2: "Aprire un ticket e risolverlo.",
+        step5bb_cat: "<strong>Categoria:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; SW &gt; CIAO - ERROR FISCAL PRINTER",
+        // 2B0
+        step2b0_title: "Problema stampante fiscale",
+        step2b0_p1: "Aprire un ticket e assegnarlo a <strong>LUX_Epson_BBC</strong> allegando la foto del visore e della Stampante fiscale.",
+        step2b0_ip: "<strong>IP stampante Fiscale:</strong>",
+        step2b0_cat: "<strong>Categoria:</strong> RETAIL > APPLICATION > CIAO OPTICAL > HW > CIAO - ERROR FISCAL PRINTER",
         // 5B4
         step5b4_title: "Power cycle completo",
         step5b4_li1: "Chiedere allo store di spegnere la stampante fiscale utilizzando l’apposito pulsante.",
@@ -1101,6 +1146,13 @@ const translations = {
         // 5BB
         step5bb_title: "Ticket – Resolved",
         step5bb_p1: "Issue resolved.",
+        step5bb_p2: "Open a ticket and resolve it.",
+        // 2B0
+        step2b0_title: "Fiscal printer issue",
+        step2b0_p1: "Open a ticket and assign it to <strong>LUX_Epson_BBC</strong>, attaching a photo of the display and the fiscal printer.",
+        step2b0_ip: "<strong>Fiscal Printer IP:</strong>",
+        step2b0_cat: "<strong>Category:</strong> RETAIL > APPLICATION > CIAO OPTICAL > HW > CIAO - ERROR FISCAL PRINTER",
+        step5bb_cat: "<strong>Category:</strong> RETAIL &gt; APPLICATION &gt; CIAO OPTICAL &gt; SW &gt; CIAO - ERROR FISCAL PRINTER",
         // 5B4
         step5b4_title: "Full power cycle",
         step5b4_li1: "Ask the store to turn off the fiscal printer using its power button.",
